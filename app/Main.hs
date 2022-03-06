@@ -1,8 +1,9 @@
 module Main where
 
-import System.Exit ( ExitCode(ExitFailure), exitWith )
+import System.Environment ( getArgs )
 
-import Lib
+import Lib ( generateGrid )
+import Parse ( parseArgs )
 
 main :: IO ()
-main = exitWith $ ExitFailure 84
+main = getArgs >>= parseArgs >>= generateGrid
