@@ -1,4 +1,4 @@
-module Parse ( Args(..), parseArgs ) where
+module Parse ( Args(..), parseArgsOrExit ) where
 
 import Text.Read (readMaybe)
 import Rules (hasRule)
@@ -21,8 +21,7 @@ readPositiveInt s = readMaybe s >>= positive
 parseNextArg :: Args -> [String] -> Maybe Args
 parseNextArg args [] = Just args
 parseNextArg args ("--rule":r:xs)
-    = readMaybe r >>= \r -> if hasRule r
-        then parseNextArg (args { rule = r }) xs else Nothing
+    = readPositiveInt r >>= \r -> parseNextArg (args { rule = r }) xs
 parseNextArg args ("--start":s:xs)
     = readPositiveInt s >>= \s -> parseNextArg (args { start = s }) xs
 parseNextArg args xs = parseNextArg' args xs
@@ -36,15 +35,17 @@ parseNextArg' args ("--move":m:xs)
     = readMaybe m >>= \m -> parseNextArg (args { offset = m }) xs
 parseNextArg' _ _ = Nothing
 
+parseArgs :: [String] -> Maybe Args
+parseArgs [] = Nothing
+parseArgs xs = parseNextArg (Args (-1) 0 80 (-1) 0) xs
+
 exitWithHelp :: IO Args
 exitWithHelp = hPutStrLn stderr ("Usage: ./wolfram [--rule r] [--start s]" ++
                 " [--window w] [--lines h] [--move m]")
                 >> exitWith (ExitFailure 84)
 
-parseArgs :: [String] -> IO Args
-parseArgs l = case o l of
+parseArgsOrExit :: [String] -> IO Args
+parseArgsOrExit xs = case parseArgs xs of
     Nothing -> exitWithHelp
-    Just a | rule a == -1 -> exitWithHelp
+    Just a | not (hasRule $ rule a) -> exitWithHelp
     Just a -> pure a
-    where o [] = Nothing
-          o l = parseNextArg (Args (-1) 0 80 (-1) 0) l

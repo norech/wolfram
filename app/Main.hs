@@ -3,7 +3,7 @@ module Main where
 import System.Environment ( getArgs )
 
 import Lib ( generateGrid )
-import Parse ( parseArgs )
+import Parse ( parseArgsOrExit )
 
 main :: IO ()
-main = getArgs >>= parseArgs >>= generateGrid
+main = getArgs >>= parseArgsOrExit >>= generateGrid
