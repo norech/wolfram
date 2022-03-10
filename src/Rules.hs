@@ -3,6 +3,7 @@ import Data.Maybe (isNothing)
 
 toBinary :: Int -> [Int]
 toBinary 0 = [0]
+toBinary 255 = [1, 1, 1, 1, 1, 1, 1, 1]
 toBinary n = toBinary (n `quot` 2) ++ [n `rem` 2]
 
 toBool :: Int -> Bool
