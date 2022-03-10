@@ -38,7 +38,8 @@ truncateAtMiddle n o xs = take n $ drop ((length xs `div` 2 - n `div` 2) - o) xs
 printLine :: Args -> Int -> [Bool] -> IO ()
 printLine a i _ | i <= start a = pure ()
 printLine a i xs
-    = mapM_ printBool (truncateAtMiddle (width a) (offset a) xs) >> putStrLn ""
+    = mapM_ printBool (truncateAtMiddle (width a) (offset a + 1) xs)
+    >> putStrLn ""
 
 generateNextLines :: Args -> Int -> Maybe [Bool] -> IO [Bool]
 generateNextLines a i (Just xs) = generateLines a (i + 1) xs
