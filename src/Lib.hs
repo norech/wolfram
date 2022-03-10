@@ -33,7 +33,8 @@ printBool True  = putChar '*'
 printBool False = putChar ' '
 
 truncateAtMiddle :: Int -> Int -> [Bool] -> [Bool]
-truncateAtMiddle n o xs = take n $ drop ((length xs `div` 2 - n `div` 2) - o) xs
+truncateAtMiddle n o xs = take n $ drop (maxwidth - o) xs
+    where maxwidth = length xs `div` 2 - n `div` 2
 
 printLine :: Args -> Int -> [Bool] -> IO ()
 printLine a i _ | i <= start a = pure ()
